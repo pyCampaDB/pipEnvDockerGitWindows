@@ -139,6 +139,7 @@ def upload_github():
             runSubprocess(f'git remote add origin https://github.com/pyCampaDB/{my_git}.git',
                 shell=True, check=True, capture_output=True)
         else:
+            print('\npull\n')
             runSubprocess('git pull origin main', shell=True, check=True)
         print('\npush\n')
         runSubprocess(f'git push -u origin main', shell=True, check=True)
