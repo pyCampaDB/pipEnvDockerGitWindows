@@ -14,8 +14,6 @@ def ensure_pipenv_installed():
         print('pipenv not found. Install pipenv...')
         check_call(['pip', 'install', 'pipenv'])
 
-
-
 def manage_and_use_env():
     if not exists('Pipfile'):
         print('Pipfile not exist. Initializing pipenv environment...\n')
@@ -23,7 +21,6 @@ def manage_and_use_env():
     else:
 
         print('Pipfile exists. Environment ready.\n')
-
 
 #Function to install a single package using pipenv
 def install_package_with_pipenv(package):
@@ -44,8 +41,6 @@ def install_package_with_pipenv(package):
     except CalledProcessError as cp:
         print(f"\nAn error occurred: {cp.returncode}\n")
 
-
-
 #Function to install all packages from a requirements.txt file using pipveng
 def install_packages_from_file_with_pipenv(file):
     try:
@@ -58,8 +53,6 @@ def run_script(file):
         runSubprocess(['pipenv', 'run', 'python', f'{file}.py'])
     except CalledProcessError as e:
         print(f'An error occurred: {e.stderr.decode()}')
-
-
 
 def upload_docker():
     username = getenv('DOCKER_USERNAME', default='default_username')
@@ -135,7 +128,7 @@ def upload_github():
         runSubprocess('git branch -M main', shell=True, check=True)
         first_upload = ''
         while first_upload not in ['Y', 'y', 'N', 'n']:
-            first_upload = input('Enter if it is your first commit: ')
+            first_upload = input('Enter if it is your first commit [Y/N]: ')
             if first_upload not in ['Y', 'y', 'N', 'n']:
                 print('\nInvalid option\n')
         
