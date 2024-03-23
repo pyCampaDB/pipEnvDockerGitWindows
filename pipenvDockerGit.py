@@ -1,4 +1,4 @@
-from subprocess import check_call, CalledProcessError, run as runSubprocess
+from subprocess import check_call, CalledProcessError, run as runSubprocess, check_output
 from os.path import exists
 from os import getenv
 from pkg_resources import require, VersionConflict, DistributionNotFound
@@ -22,24 +22,36 @@ def manage_and_use_env():
 
         print('Pipfile exists. Environment ready.\n')
 
+
+def check_package_installed(package):
+    try:
+        check_output(['pipenv', 'run', 'pip', 'show', package])
+        return True
+    except CalledProcessError:
+        return False
 #Function to install a single package using pipenv
 def install_package_with_pipenv(package):
-    try:
-        require(package)
-        print('\npackage already installed\n')
-    except DistributionNotFound:
-        print(f"\nThe package {package} doesn't exist.\nInstalling package...\n")
-        runSubprocess(f'python -m pip install {package}', shell=True, check=True)
-    except VersionConflict as vc:
-        installed_version = vc.dist.version
-        required_version = vc.req
-        print(f"\nA version's conflict detected:\n"
-              f"Version installed: {installed_version}"
-              f"Version required: {required_version}"
-              "Trying to install the package required\n")
-        runSubprocess(f'python -m pip install --upgrade {package}', shell=True, check=True)
-    except CalledProcessError as cp:
-        print(f"\nAn error occurred: {cp.returncode}\n")
+    b = check_package_installed(package)
+    if b:
+        print(f'\n{package} already installed\n')
+    else:
+        print(f'\nInstalling {package}...') 
+        try:
+            runSubprocess(f'pipenv install {package}', shell=True, check=True)
+            print(f'\n{package} was installed successfully\n')
+        except DistributionNotFound:
+            print(f"\nThe package {package} doesn't exist.\nInstalling package...\n")
+            runSubprocess(f'pipenv install {package}', shell=True, check=True)
+        except VersionConflict as vc:
+            installed_version = vc.dist.version
+            required_version = vc.req
+            print(f"\nA version's conflict detected:\n"
+                f"Version installed: {installed_version}"
+                f"Version required: {required_version}"
+                "Trying to install the package required\n")
+            runSubprocess(f'pipenv install --upgrade {package}', shell=True, check=True)
+        except CalledProcessError as cp:
+            print(f"\nAn error occurred: {cp.returncode}\n")
 
 #Function to install all packages from a requirements.txt file using pipveng
 def install_packages_from_file_with_pipenv(file):
