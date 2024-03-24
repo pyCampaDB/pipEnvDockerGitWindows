@@ -1,6 +1,6 @@
 from subprocess import check_call, CalledProcessError, run as runSubprocess, check_output
-from os.path import exists
-from os import getenv
+from os.path import exists, join
+from os import getenv, getcwd
 from pkg_resources import require, VersionConflict, DistributionNotFound
 #from getpass import getpass
 
@@ -55,10 +55,11 @@ def install_package_with_pipenv(package):
 
 #Function to install all packages from a requirements.txt file using pipveng
 def install_packages_from_file_with_pipenv(file):
-    try:
-        runSubprocess(f'pipenv install -r {file}.txt', shell=True, check=True)
-    except CalledProcessError as cp:
-        print(f"\nAn error occurred: {cp.returncode}")
+    file_path = join(getcwd(), f"{file}.txt")
+    with open (f'{file_path}', 'r') as myFile:
+        for package in myFile.readlines():
+            install_package_with_pipenv(package.strip())
+        myFile.close()
 
 def run_script(file):
     try:
