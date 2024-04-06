@@ -61,6 +61,22 @@ def install_packages_from_file_with_pipenv(file):
             install_package_with_pipenv(package.strip())
         myFile.close()
 
+def check_packages_installed():
+    try:
+        runSubprocess('pipenv graph', shell=True, check=True)
+    except CalledProcessError as e:
+        print(f'An error ocurred: {e.stderr.decode()}')
+
+
+def delete_pipenv():
+    try:
+        runSubprocess('pipenv --rm', shell=True, check=True)
+        runSubprocess('del Pipfile', shell=True, check=True)
+        runSubprocess('del Pipfile.lock', shell=True, check=True)
+    except CalledProcessError as e:
+        print(f'An error ocurred: {e.stderr.decode()}')
+
+
 def run_script(file):
     try:
         runSubprocess(['pipenv', 'run', 'python', f'{file}.py'])
@@ -137,6 +153,44 @@ def upload_github():
         commit = input('Enter commit message: ')
         runSubprocess(f'git commit -m "{commit}"', shell=True, check=True)
 
+        first_upload = ''
+        while first_upload not in ['Y', 'y', 'N', 'n']:
+            first_upload = input('Enter if it is your first commit [Y/N]: ')
+            if first_upload not in ['Y', 'y', 'N', 'n']:
+                print('\nInvalid option\n')
+        
+        if first_upload in ['Y', 'y']:
+            print('\ngit branch\n')
+            runSubprocess('git branch -M main', shell=True, check=True)
+            my_git = input('Enter repository name: ')
+            print('\nremote add origin\n')
+            runSubprocess(f'git remote add origin https://github.com/pyCampaDB/{my_git}.git',
+                shell=True, check=True, capture_output=True)
+
+        print('\npush\n')
+        runSubprocess(f'git push -u origin main', shell=True, check=True)
+        print('\nProject uploaded to GitHub\n')
+    except CalledProcessError as cp:
+        print(f'\nCalledProcessError: {cp.stderr}\n')
+    except Exception as e:
+        print(f'Exeption: {e}')
+
+    try:
+        email = getenv("GITHUB_EMAIL", default='default_email')
+        runSubprocess(f'git config --global user.email "{email}"',
+                      shell=True, check=True)
+        print('\nname')
+        username = getenv("GITHUB_USERNAME", default='default_username')
+        runSubprocess(f'git config --global user.name "{username}"',
+                      shell=True, check=True)
+        runSubprocess('git init', shell=True, check=True)
+        print('\nInitializing Github & git status\n')
+        runSubprocess('git status', shell=True, check=True)
+        print('\ngit add .\n')
+        runSubprocess('git add .', shell=True, check=True)
+        commit = input('Enter commit message: ')
+        runSubprocess(f'git commit -m "{commit}"', shell=True, check=True)
+
         print('\ngit branch\n')
         runSubprocess('git branch -M main', shell=True, check=True)
         first_upload = ''
@@ -148,7 +202,6 @@ def upload_github():
         if first_upload in ['Y', 'y']:
             my_git = input('Enter repository name: ')
             print('\nremote add origin\n')
-            #
             runSubprocess(f'git remote add origin https://github.com/pyCampaDB/{my_git}.git',
                 shell=True, check=True, capture_output=True)
         else:
@@ -164,33 +217,39 @@ def upload_github():
 
 
 def run():
-    ensure_pipenv_installed()
-    manage_and_use_env()
-    option = '3'
-    while option not in ['1', '2']:
-        option = input('\n1. Run script'
-                       '\n2. Settings pipenv'
-                       '\nEnter your choice: ')
-        if option not in ['1', '2']:
-            print('\ninvalid option\n')
-    if option == '2':
-        menu = '1'
-        while menu in ['1', '2']:
-            menu = input('\n1. Install an only package'
-                         '\n2. Install all packages written in the file'
-                         '\n(Other). Exit setting pipenv and run script'
-                         '\nEnter your choice: ')
-            if menu=='1':
-                package = input('\nEnter package name: ')
-                install_package_with_pipenv(package)
-            elif menu=='2':
-                file = input('\nEnter the file name: ')
-                install_packages_from_file_with_pipenv(file)
-
-    file = input('\nEnter file name: ')
     from dotenv import load_dotenv
     load_dotenv()
-    run_script(file)
+    ensure_pipenv_installed()
+    manage_and_use_env()
+    option = '2'
+    while option in ['1', '2']:
+        option = input('\n1. Run script'
+                       '\n2. Settings pipenv'
+                       '\n(Other) Exit\n'
+                       '\nEnter your choice: ')
+
+        if option == '2':
+            menu = '1'
+            while menu in ['1', '2', '3', '4']:
+                menu = input('\n1. Install an only package'
+                            '\n2. Install all packages written in the file'
+                            '\n3. Check your packages already installed'
+                            '\n4. Restart your virtual environment'
+                            '\n(Other). Exit pipenv settings\n'
+                            '\nEnter your choice: ')
+                if menu=='1':
+                    package = input('\nEnter package name: ')
+                    install_package_with_pipenv(package)
+                elif menu=='2':
+                    file = input('\nEnter the file name: ')
+                    install_packages_from_file_with_pipenv(file)
+                elif menu=='3': check_packages_installed()
+                elif menu=='4': 
+                    delete_pipenv()
+                    manage_and_use_env()
+        elif option == '1':
+            file = input('\nEnter file name: ')
+            run_script(file)
 
     docker_option = '9'
     while docker_option not in ['Y', 'y', 'N', 'n']:
