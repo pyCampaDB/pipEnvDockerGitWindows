@@ -175,45 +175,6 @@ def upload_github():
     except Exception as e:
         print(f'Exeption: {e}')
 
-    try:
-        email = getenv("GITHUB_EMAIL", default='default_email')
-        runSubprocess(f'git config --global user.email "{email}"',
-                      shell=True, check=True)
-        print('\nname')
-        username = getenv("GITHUB_USERNAME", default='default_username')
-        runSubprocess(f'git config --global user.name "{username}"',
-                      shell=True, check=True)
-        runSubprocess('git init', shell=True, check=True)
-        print('\nInitializing Github & git status\n')
-        runSubprocess('git status', shell=True, check=True)
-        print('\ngit add .\n')
-        runSubprocess('git add .', shell=True, check=True)
-        commit = input('Enter commit message: ')
-        runSubprocess(f'git commit -m "{commit}"', shell=True, check=True)
-
-        print('\ngit branch\n')
-        runSubprocess('git branch -M main', shell=True, check=True)
-        first_upload = ''
-        while first_upload not in ['Y', 'y', 'N', 'n']:
-            first_upload = input('Enter if it is your first commit [Y/N]: ')
-            if first_upload not in ['Y', 'y', 'N', 'n']:
-                print('\nInvalid option\n')
-        
-        if first_upload in ['Y', 'y']:
-            my_git = input('Enter repository name: ')
-            print('\nremote add origin\n')
-            runSubprocess(f'git remote add origin https://github.com/pyCampaDB/{my_git}.git',
-                shell=True, check=True, capture_output=True)
-        else:
-            print('\npull\n')
-            runSubprocess('git pull origin main', shell=True, check=True)
-        print('\npush\n')
-        runSubprocess(f'git push -u origin main', shell=True, check=True)
-        print('\nProject uploaded to GitHub\n')
-    except CalledProcessError as cp:
-        print(f'\nCalledProcessError: {cp.stderr}\n')
-    except Exception as e:
-        print(f'Exeption: {e}')
 
 
 def run():
