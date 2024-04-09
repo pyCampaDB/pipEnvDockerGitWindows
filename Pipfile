@@ -9,6 +9,7 @@ numpy = "*"
 matplotlib = "*"
 ipykernel = "*"
 python-dotenv = "*"
+jupyter = "*"
 
 [dev-packages]
 
