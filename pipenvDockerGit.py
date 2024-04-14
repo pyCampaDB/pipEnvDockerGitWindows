@@ -93,7 +93,7 @@ def delete_pipenv():
 
 def run_script():
     try:
-        runSubprocess(f'python {input("Enter the file name: ")}.py',
+        runSubprocess(f'pipenv run python {input("Enter the file name: ")}.py',
                       shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error ocurred: {cp.returncode}')
@@ -173,9 +173,10 @@ def upload_github():
                 print('\nInvalid option\n')
         
         if first_upload in ['Y', 'y']:
+            branch = input('Enter your branch: ')
+            runSubprocess(f'git branch -M {branch}', shell=True, check=True)
             my_git = input('Enter repository name: ')
             print('\nremote add origin\n')
-            #
             runSubprocess(f'git remote add origin https://github.com/pyCampaDB/{my_git}.git',
                 shell=True, check=True, capture_output=True)
 
@@ -215,7 +216,7 @@ def run():
             try:
                 while True:
                     a = cmd()
-                    if a == 'exit':
+                    if a.lower() == 'exit':
                         break                 
             except EOFError:
                 pass
