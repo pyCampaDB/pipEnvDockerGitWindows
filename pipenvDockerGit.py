@@ -190,7 +190,7 @@ def upload_github():
 
 
 def cmd():
-    command = input('CMD: ')
+    command = input(f'{getcwd()}: ')
     try:
         runSubprocess(command, shell=True, check=True)
     except CalledProcessError as cp:
