@@ -7,7 +7,7 @@ from signal import signal, SIGINT
 
 
 #########################################################################################################################################3
-# evita salir del script al ejecutar Ctrl+C
+# avoid exiting the script when executing Ctrl+C
 def signal_handler(sign, frame):
     print('Ctrl+C pressed')
 
@@ -60,7 +60,12 @@ def install_package_with_pipenv(package):
 
 #Function to install all packages from a requirements.txt file using pipveng
 def install_packages_from_file_with_pipenv():
-    with open (f'{getcwd()}\\requirements.txt', 'r') as myFile:
+    if exists('requirements.txt'):
+        req = 'requirements.txt'
+    else:
+        req = input('Enter the name file: ')
+    
+    with open (f'{getcwd()}\\{req}', 'r') as myFile:
         for package in myFile.readlines():
             install_package_with_pipenv(package.strip())
 
@@ -97,6 +102,8 @@ def pipenv_run():
         runSubprocess(f'pipenv run {opt}', shell=True, check=True)
     except CalledProcessError as e:
         print(f'An error occurred: {e.returncode}')
+
+
 def run_script():
     try:
         runSubprocess(f'pipenv run python {input("Enter the file name: ")}.py',
@@ -108,6 +115,16 @@ def run_script():
 def upload_docker():
     username = getenv('DOCKER_USERNAME', default='default_username')
     pwd = getenv('DOCKER_PASSWORD', default='default_password')
+    option = ''
+    jupyter = ''
+    while option not in ['Y','y', 'N', 'n']:
+        option = input('Do you need to install Jupyter Notebook? [Y/N]: ')
+        if option not in ['Y','y', 'N', 'n']:
+            print('\nInvalid option.\n')
+    if option in ['Y', 'y']:
+        jupyter = "RUN pip install jupyter ipykernel"
+
+
     try:
         runSubprocess(['pipenv','run','docker', 'login', '--username', username, '--password', pwd], check=True)
 
@@ -126,6 +143,9 @@ COPY Pipfile Pipfile.lock /app/
 
 #Installing depends in the system
 RUN pipenv install --system --deploy
+
+# Install Jupyter (if you need it)
+{jupyter}
 
 #Copy all the files
 COPY . /app
@@ -160,40 +180,51 @@ def run_container_docker():
     name_container = input('container: ')
     name_img = input('image: ')
     try:
-        runSubprocess(f'pipenv run docker run -p {ports} --name {name_container} {name_img}')
+        runSubprocess('pipenv run docker'
+                      f' run -p {ports} --name'
+                      f' {name_container} {name_img}',
+                      shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
 def docker_start():
     container = input('name container: ')
     try:
-        runSubprocess(f'pipenv run docker start {container}', shell=True, check=True)
+        runSubprocess('pipenv run docker '
+                      f'start {container}', 
+                      shell=True, 
+                      check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
 def docker_stop():
     container = input('name container: ')
     try:
-        runSubprocess(f'pipenv run docker stop {container}', shell=True, check=True)
+        runSubprocess('pipenv run docker stop'
+                      f' {container}', 
+                      shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
 def docker_restart():
     container = input('name container: ')
     try:
-        runSubprocess(f'pipenv run docker restart {container}', shell=True, check=True)
+        runSubprocess(f'pipenv run docker restart {container}', 
+                      shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
 def docker_ps():
     try:
-        runSubprocess('pipenv run docker ps', shell=True, check=True)
+        runSubprocess('pipenv run docker ps', 
+                      shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
 def docker_ps_a():
     try:
-        runSubprocess('pipenv run docker ps -a', shell=True, check=True)
+        runSubprocess('pipenv run docker ps -a', 
+                      shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
@@ -236,6 +267,24 @@ def upload_github():
     except Exception as e:
         print(f'Exeption: {e.__str__}')
 
+def git_remote_v():
+    try:
+        runSubprocess(
+            'git remote -v', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.returncode}')
+
+def git_remove_origin():
+    try:
+        runSubprocess(
+            'git remote remove origin',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.returncode}')
+
 
 def cmd():
     command = input(f'{getcwd()}: ')
@@ -245,6 +294,9 @@ def cmd():
         print(f'An error occurred: {cp.returncode}')
     finally:
         return command
+
+
+
 
 def run():
     signal(SIGINT, signal_handler)
@@ -258,7 +310,7 @@ def run():
                         '\n2. Run Script'
                         '\n3. Settings pipenv'
                         '\n4. Docker'
-                        '\n5. Upload project to GitHub'
+                        '\n5. GIT'
                         '\n(Other). Exit\n'
                         '\nEnter your choice: ')
 
@@ -330,15 +382,21 @@ def run():
                 
 
             elif option == '5':
-                git_option = '9'
-                while git_option not in ['Y', 'y', 'N', 'n']:
-                    git_option = input('Do you want to upload this project to GitHub? [Y/N]: ')
-                    if git_option not in ['Y', 'y', 'N', 'n']:
-                        print('\nInvalid option\n')
-                if git_option in ['Y', 'y']:
-                    upload_github()
-                else:
-                    print('\nGit pass...\n')
+                git_option = '1'
+                while git_option in ['1', '2', '3']:
+                    git_option = input(
+                        '\n******************** GIT ********************\n\n'
+                        '1. Upload your project to GitHub\n'
+                        '2. git remote -v\n'
+                        '3. git remote remove origin\n\n'
+                        '(Other) Enter your choice: '
+                    )
+
+                    if git_option == '1':
+                        upload_github()
+                    elif git_option == '2': git_remote_v()
+                    elif git_option == '3': git_remove_origin()
+                print('\n******************** EXIT GIT ********************\n\n')
 
 ############################################# MAIN ##########################################################################
 if __name__ == '__main__':
