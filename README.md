@@ -8,14 +8,11 @@ Version: 3.11.0
 
 Sistema Operativo: Windows 10
 
-Date: 13/03/2024 ######################################################################################################################
+Date: 18/04/2024 ######################################################################################################################
 
-This application generates different encryption for the password you enter.
+This script generates your own pipenv virtual environment and allows you to manage your environment in a very easy way. You only have to write the packages to install or your requirements.txt file if you have it. It also allows you to see what packages you already have installed in your environment and uninstall your package if it causes problems with dependencies.
 
-In addition, we have a list of the 100,000 passwords most known by hackers, 
-and can generate all their encryption algorithms. The file which contains these passwords is 'familiar passwords'.txt
-
-This application has been created for learning purposes and not for cyber-attacks.
+n addition, you can interact with CMD in single script sequences from the directory itself, run any other python app by typing just the filename, manage your Docker Desktop from there with the most common commands, just like with GIT.
 
 ######################################################################################################################
 
