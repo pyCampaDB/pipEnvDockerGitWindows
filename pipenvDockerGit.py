@@ -606,16 +606,19 @@ def run():
     option = '1'
     while option in ['1', '2', '3', '4', '5', '6']:
 
-        option = input( '\n1. CMD'
-                        '\n2. Run Script'
-                        '\n3. Settings pipenv'
-                        '\n4. Docker'
-                        '\n5. Docker Compose'
-                        '\n6. GIT'
-                        '\n(Other). Exit\n'
-                        '\nEnter your choice: ')
+        option = input( 
+            '\n*********************************** SETUP ***********************************\n\n'
+            '\n1. CMD'
+            '\n2. Run Script'
+            '\n3. Settings pipenv'
+            '\n4. Docker'
+            '\n5. Docker Compose'
+            '\n6. GIT'
+            '\n(Other). Exit\n'
+            '\nEnter your choice: ')
 
         if option == '1':
+            print('\n*********************************** CMD ***********************************\n\n')
             try:
                 while True:
                     a = cmd()
@@ -623,6 +626,8 @@ def run():
                         break                 
             except EOFError:
                 pass
+            finally:
+                print('\n*********************************** EXIT CMD ***********************************\n\n')
         elif option == '2':
             run_script()
 
@@ -705,7 +710,6 @@ def run():
                         '7. git merge\n'
                         '8. Display the availables local branches of the repository\n'
                         '9. git pull\n'
-                        '\n'
                         '(Other) Exit GIT\n\n'
                         'Enter your choice: '
                     )
@@ -721,7 +725,7 @@ def run():
                     elif git_option == '8': git_branch()
                     elif git_option == '9': git_pull()
                 print('\n******************** EXIT GIT ********************\n\n')
-
+    print('\n*********************************** EXIT SETUP ***********************************\n\n')
 ############################################# MAIN ##########################################################################
 if __name__ == '__main__':
     run()
