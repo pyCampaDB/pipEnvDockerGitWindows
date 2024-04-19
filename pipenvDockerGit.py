@@ -484,7 +484,11 @@ def upload_github():
             print('\nremote add origin\n')
             runSubprocess(f'pipenv run git remote add {remote} https://github.com/pyCampaDB/{my_git}.git',
                 shell=True, check=True, capture_output=True)
-
+        
+        pull = input('Do you want to make a pull? [Y/N]: ')
+        if pull in ['Y', 'y']:
+            print('\npull\n')
+            git_pull(remote, branch)
         print('\npush\n')
         runSubprocess(f'pipenv run git push -u {remote} {branch}', 
                       shell=True, check=True)
@@ -566,6 +570,20 @@ def git_merge():
             f'pipenv run git merge {branch}',
             shell=True,
             check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.returncode}')
+
+
+def git_pull(remote=None, branch=None):
+    if remote == None:
+        remote = input('Enter the remote name: ')
+    if branch == None:
+        branch = input('Enter the branch name: ')
+    try:
+        runSubprocess(
+            f'pipenv run git pull {remote} {branch}',
+            shell=True, check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
@@ -675,7 +693,7 @@ def run():
 
             elif option == '6':
                 git_option = '1'
-                while git_option in ['1', '2', '3', '4', '5', '6', '7', '8']:
+                while git_option in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
                     git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. Upload your project to GitHub\n'
@@ -685,7 +703,8 @@ def run():
                         '5. Send local commits to a remote repository\n'
                         '6. git checkout\n'
                         '7. git merge\n'
-                        '8. Display the availables local branches of the repository'
+                        '8. Display the availables local branches of the repository\n'
+                        '9. git pull\n'
                         '\n'
                         '(Other) Exit GIT\n\n'
                         'Enter your choice: '
@@ -700,6 +719,7 @@ def run():
                     elif git_option == '6': git_checkout()
                     elif git_option == '7': git_merge()
                     elif git_option == '8': git_branch()
+                    elif git_option == '9': git_pull()
                 print('\n******************** EXIT GIT ********************\n\n')
 
 ############################################# MAIN ##########################################################################
