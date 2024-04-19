@@ -474,7 +474,8 @@ def upload_github():
             first_upload = input('Enter if it is your first commit [Y/N]: ')
             if first_upload not in ['Y', 'y', 'N', 'n']:
                 print('\nInvalid option\n')
-        
+        branch = 'main'
+        remote = 'origin'
         if first_upload in ['Y', 'y']:
             branch = input('Enter your branch: ')
             runSubprocess(f'pipenv run git branch -M {branch}', shell=True, check=True)
