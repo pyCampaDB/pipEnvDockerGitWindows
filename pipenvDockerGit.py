@@ -115,16 +115,7 @@ def run_script():
 def upload_docker():
     username = getenv('DOCKER_USERNAME', default='default_username')
     pwd = getenv('DOCKER_PASSWORD', default='default_password')
-    option = ''
-    jupyter = ''
-    while option not in ['Y','y', 'N', 'n']:
-        option = input('Do you need to install Jupyter Notebook? [Y/N]: ')
-        if option not in ['Y','y', 'N', 'n']:
-            print('\nInvalid option.\n')
-    if option in ['Y', 'y']:
-        jupyter = "RUN pip install jupyter ipykernel"
-
-
+   
     try:
         runSubprocess(['pipenv','run','docker', 'login', '--username', username, '--password', pwd], check=True)
 
@@ -144,8 +135,6 @@ COPY Pipfile Pipfile.lock /app/
 #Installing depends in the system
 RUN pipenv install --system --deploy
 
-# Install Jupyter (if you need it)
-{jupyter}
 
 #Copy all the files
 COPY . /app
@@ -233,14 +222,16 @@ def remove_image():
         '\nEnter the ID of the image: '
     )
     try:
-        runSubprocess(f'docker rmi {img}', shell=True, check=True)
+        runSubprocess(f'pipenv run docker rmi {img}', 
+                      shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
 def remove_container():
     container = input('\nEnter the ID of the container: ')
     try:
-        runSubprocess(f'docker rm {container}', shell=True, check=True)
+        runSubprocess(f'pipenv run docker rm {container}', 
+                      shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
@@ -248,7 +239,7 @@ def exec_it():
     container = input('\nEnter the ID of the container: ')
     try:
         runSubprocess(
-            f'docker exec -it {container} bash',
+            f'pipenv run docker exec -it {container} bash',
             shell=True,
             check=True
         )
@@ -259,7 +250,7 @@ def show_logs():
     container = input('\nEnter the ID of the container: ')
     try:
         runSubprocess(
-            f'docker logs {container}',
+            f'pipenv run docker logs {container}',
             shell=True,
             check=True
         )
@@ -281,14 +272,13 @@ def docker_pull():
         if option not in ['1', '2', '3']:
             print('\nInvalid option\n')
     
-    service = ''
 
     img = input('Enter the image name: ')
     if option == '2': 
         tag = input('Enter the tag of the image: ')
         try:
             runSubprocess(
-                f'docker pull {img}:{tag}',
+                f'pipenv run docker pull {img}:{tag}',
                 shell=True,
                 check=True
             )
@@ -299,7 +289,7 @@ def docker_pull():
         digest = input('Enter the digest of the image: ')
         try:
             runSubprocess(
-                f'docker pull {img}@{digest}',
+                f'pipenv run docker pull {img}@{digest}',
                 shell=True,
                 check=True
             )
@@ -309,7 +299,7 @@ def docker_pull():
     else:
         try:
             runSubprocess(
-                f'docker pull {img}',
+                f'pipenv run docker pull {img}',
                 shell=True,
                 check=True
             )
@@ -317,12 +307,10 @@ def docker_pull():
             print(f'An error occurred: {cp.returncode}')
 
     
-
-
 def compose_up():
     try:
         runSubprocess(
-            f'docker-compose up',
+            f'pipenv run docker-compose up',
             shell=True,
             check=True
         )
@@ -332,7 +320,7 @@ def compose_up():
 def compose_down():
     try:
         runSubprocess(
-            'docker-compose down',
+            'pipenv run docker-compose down',
             shell=True,
             check=True
         )
@@ -342,7 +330,7 @@ def compose_down():
 def compose_build():
     try:
         runSubprocess(
-            'docker-compose build',
+            'pipenv run docker-compose build',
             check=True,
             shell=True
         )
@@ -352,7 +340,7 @@ def compose_build():
 def compose_logs():
     try:
         runSubprocess(
-            'docker-compose logs',
+            'pipenv run docker-compose logs',
             shell=True,
             check=True
         )
@@ -362,7 +350,7 @@ def compose_logs():
 def compose_ps():
     try:
         runSubprocess(
-            'docker-compose ps',
+            'pipenv run docker-compose ps',
             shell=True,
             check=True
         )
@@ -381,7 +369,7 @@ def compose_restart():
             services.append(s)
         
         runSubprocess(            
-            f'docker-compose restart {services}',
+            f'pipenv run docker-compose restart {services}',
             shell=True,
             check=True
         )
@@ -391,7 +379,7 @@ def compose_restart():
 def compose_stop():
     try:
         runSubprocess(
-            'docker-compose stop',
+            'pipenv run docker-compose stop',
             shell=True,
             check=True
         )
@@ -401,7 +389,7 @@ def compose_stop():
 def compose_start():
     try:
         runSubprocess(
-            'docker-compose start',
+            'pipenv run docker-compose start',
             shell=True,
             check=True
         )
@@ -412,7 +400,7 @@ def compose_exec():
     service = input('Enter the name of the container: ')
     try:
         runSubprocess(
-            f'docker-compose exec {service} bash',
+            f'pipenv run docker-compose exec {service} bash',
             check=True,
             shell=True
         )
@@ -423,7 +411,7 @@ def compose_exec():
 def compose_pull():
     try:
         runSubprocess(
-        'docker-compose pull',
+        'pipenv run docker-compose pull',
         shell=True,
         check=True
         )
@@ -463,22 +451,23 @@ def manage_compose():
         elif opt == '10': compose_pull()
 
     print('\n******************************** END DOCKER COMPOSE ********************************\n')
+
 def upload_github():
     try:
         email = getenv("GITHUB_EMAIL", default='default_email')
-        runSubprocess(f'git config --global user.email "{email}"',
+        runSubprocess(f'pipenv run git config --global user.email "{email}"',
                       shell=True, check=True)
         print('\nname')
         username = getenv("GITHUB_USERNAME", default='default_username')
-        runSubprocess(f'git config --global user.name "{username}"',
+        runSubprocess(f'pipenv run git config --global user.name "{username}"',
                       shell=True, check=True)
-        runSubprocess('git init', shell=True, check=True)
+        runSubprocess('pipenv run git init', shell=True, check=True)
         print('\nInitializing Github & git status\n')
-        runSubprocess('git status', shell=True, check=True)
+        runSubprocess('pipenv run git status', shell=True, check=True)
         print('\ngit add .\n')
-        runSubprocess('git add .', shell=True, check=True)
+        runSubprocess('pipenv run git add .', shell=True, check=True)
         commit = input('Enter commit message: ')
-        runSubprocess(f'git commit -m "{commit}"', shell=True, check=True)
+        runSubprocess(f'pipenv run git commit -m "{commit}"', shell=True, check=True)
 
         first_upload = ''
         while first_upload not in ['Y', 'y', 'N', 'n']:
@@ -488,14 +477,16 @@ def upload_github():
         
         if first_upload in ['Y', 'y']:
             branch = input('Enter your branch: ')
-            runSubprocess(f'git branch -M {branch}', shell=True, check=True)
+            runSubprocess(f'pipenv run git branch -M {branch}', shell=True, check=True)
+            remote = input('Enter the remote name: ') #Default: origin
             my_git = input('Enter repository name: ')
             print('\nremote add origin\n')
-            runSubprocess(f'git remote add origin https://github.com/pyCampaDB/{my_git}.git',
+            runSubprocess(f'pipenv run git remote add {remote} https://github.com/pyCampaDB/{my_git}.git',
                 shell=True, check=True, capture_output=True)
 
         print('\npush\n')
-        runSubprocess(f'git push -u origin main', shell=True, check=True)
+        runSubprocess(f'pipenv run git push -u {remote} {branch}', 
+                      shell=True, check=True)
         print('\nProject uploaded to GitHub\n')
     except CalledProcessError as cp:
         print(f'\nCalledProcessError: {cp.returncode}\n')
@@ -505,7 +496,7 @@ def upload_github():
 def git_remote_v():
     try:
         runSubprocess(
-            'git remote -v', shell=True, check=True
+            'pipenv run git remote -v', shell=True, check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
@@ -513,7 +504,7 @@ def git_remote_v():
 def git_remove_origin():
     try:
         runSubprocess(
-            'git remote remove origin',
+            'pipenv run git remote remove origin',
             shell=True,
             check=True
         )
@@ -526,13 +517,12 @@ def git_clone():
     )
     try:
         runSubprocess(
-            f'git clone {url}',
+            f'pipenv run git clone {url}',
             shell= True,
             check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
-
 
 def git_push_origin():
     branch = input(
@@ -540,18 +530,17 @@ def git_push_origin():
     )
     try:
         runSubprocess(
-            f'git push origin {branch}',
+            f'pipenv run git push origin {branch}',
             shell=True,
             check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
-
 def git_branch():
     try:
         runSubprocess(
-            'git branch',
+            'pipenv run git branch',
             shell=True,
             check=True
         )
@@ -562,19 +551,18 @@ def git_checkout():
     try:
         branch = input('Enter the branch name: ')
         runSubprocess(
-            f'git checkout {branch}',
+            f'pipenv run git checkout {branch}',
             shell=True,
             check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
-
 def git_merge():
     try:
         branch = input('Enter the branch name: ')
         runSubprocess(
-            f'git merge {branch}',
+            f'pipenv run git merge {branch}',
             shell=True,
             check=True
         )
@@ -589,8 +577,6 @@ def cmd():
         print(f'An error occurred: {cp.returncode}')
     finally:
         return command
-
-
 
 
 def run():
