@@ -4,3 +4,15 @@ logs/
 .dockerignore
 Pipfile.lock
 .vscode
+functions/git/__pycache__/git.cpython-311.pyc
+functions/git/__pycache__/__init__.cpython-311.pyc
+functions/cmd_and_run/__pycache__/script.cpython-311.pyc
+functions/cmd_and_run/__pycache__/__init__.cpython-311.pyc
+functions/__pycache__/setup.cpython-311.pyc
+functions/__pycache__/__init__.cpython-311.pyc
+functions/settings_docker/__pycache__/settings_docker.cpython-311.pyc
+functions/settings_docker/__pycache__/__init__.cpython-311.pyc
+functions/settings_pipenv/__pycache__/settings_pipenv.cpython-311.pyc
+functions/settings_pipenv/__pycache__/__init__.cpython-311.pyc
+functions/dockercompose/__pycache__/dockercompose.cpython-311.pyc
+functions/dockercompose/__pycache__/__init__.cpython-311.pyc

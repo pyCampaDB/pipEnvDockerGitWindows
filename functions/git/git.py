@@ -143,10 +143,31 @@ def git_pull(remote=None, branch=None):
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
+def git_add():
+    f = input('Enter the file name: ')
+    try:
+        runSubprocess(
+            f'pipenv run git add {f}',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_status():
+    try:
+        runSubprocess(
+            'git status',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
 
 def manage_git():
     git_option = '1'
-    while git_option in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+    while git_option in ['1', '2', '3', '4', '5', '6', 
+                         '7', '8', '9', '10', '11']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. Upload your project to GitHub\n'
@@ -158,6 +179,8 @@ def manage_git():
                         '7. git merge\n'
                         '8. Display the availables local branches of the repository\n'
                         '9. git pull\n'
+                        '10.git add\n'
+                        '11.git status\n'
                         '(Other) Exit GIT\n\n'
                         'Enter your choice: '
                     )
@@ -171,4 +194,6 @@ def manage_git():
         elif git_option == '7': git_merge()
         elif git_option == '8': git_branch()
         elif git_option == '9': git_pull()
+        elif git_option == '10':git_add()
+        elif git_option == '11':git_status()
         else: print('\n******************** EXIT GIT ********************\n\n')
