@@ -3,3 +3,4 @@
 logs/
 .dockerignore
 Pipfile.lock
+.vscode
