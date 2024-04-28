@@ -1,20 +1,20 @@
 from subprocess import CalledProcessError, run as runSubprocess
 from os import getenv
 
-def upload_github():
+"""def upload_github():
     try:
-        email = getenv("GITHUB_EMAIL", default='default_email')
-        runSubprocess(f'pipenv run git config --global user.email "{email}"',
-                      shell=True, check=True)
-        print('\nname')
-        username = getenv("GITHUB_USERNAME", default='default_username')
-        runSubprocess(f'pipenv run git config --global user.name "{username}"',
-                      shell=True, check=True)
+        #email = getenv("GITHUB_EMAIL", default='default_email')
+        #runSubprocess(f'pipenv run git config --global user.email "{email}"',
+        #              shell=True, check=True)
+        #print('\nname')
+        #username = getenv("GITHUB_USERNAME", default='default_username')
+        #runSubprocess(f'pipenv run git config --global user.name "{username}"',
+        #              shell=True, check=True)
         runSubprocess('pipenv run git init', shell=True, check=True)
-        print('\nInitializing Github & git status\n')
+        #print('\nInitializing Github & git status\n')
         runSubprocess('pipenv run git status', shell=True, check=True)
-        print('\ngit add .\n')
-        runSubprocess('pipenv run git add .', shell=True, check=True)
+        f = input("git add... your_file = ")
+        runSubprocess(f'pipenv run git add {f}', shell=True, check=True)
         commit = input('Enter commit message: ')
         runSubprocess(f'pipenv run git commit -m "{commit}"', shell=True, check=True)
 
@@ -45,7 +45,37 @@ def upload_github():
     except CalledProcessError as cp:
         print(f'\nCalledProcessError: {cp.returncode}\n')
     except Exception as e:
-        print(f'Exeption: {e.__str__}')
+        print(f'Exeption: {e.__str__}')"""
+
+
+def git_init():
+    try:
+        runSubprocess(
+            'git init', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+
+def git_rm_cached():
+    try:
+        file = input('Enter the file: ')
+        runSubprocess(
+            f'git rm --cached {file}',
+            check=True,
+            shell = True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_commit():
+    commit = input('Enter the commit message: ')
+    try:
+        runSubprocess(
+            f'pipenv run git commit -m "{commit}"', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
 
 def git_remote_v():
     try:
@@ -164,36 +194,69 @@ def git_status():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_log():
+    try:
+        runSubprocess(
+            'git log', check=True, shell=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_config():
+    try:
+        runSubprocess(
+            'git config', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_config_l():
+    try:
+        runSubprocess(
+            'git config -l', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
 def manage_git():
     git_option = '1'
     while git_option in ['1', '2', '3', '4', '5', '6', 
-                         '7', '8', '9', '10', '11']:
+                         '7', '8', '9', '10', '11', '12',
+                         '13', '14', '15']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
-                        '1. Upload your project to GitHub\n'
-                        '2. git remote -v\n'
-                        '3. git remote remove origin\n'
-                        '4. git clone\n'
-                        '5. Send local commits to a remote repository\n'
-                        '6. git checkout\n'
+                        '1. git init\n'
+                        '2. git status\n'
+                        '3. git add\n'
+                        '4. git commit\n'
+                        '5. git push\n'
+                        '6. git pull\n'
                         '7. git merge\n'
                         '8. Display the availables local branches of the repository\n'
-                        '9. git pull\n'
-                        '10.git add\n'
-                        '11.git status\n'
+                        '9. git checkout\n'
+                        '10.git remote remove "remote"\n'
+                        '11.git remote -v\n'
+                        '12.git clone\n'
+                        '13. git rm --cached "file"\n'
+                        '14. git config\n'
+                        '15. git config -l\n'
                         '(Other) Exit GIT\n\n'
                         'Enter your choice: '
                     )
 
-        if git_option == '1':upload_github()
-        elif git_option == '2': git_remote_v()
-        elif git_option == '3': git_remove()
-        elif git_option == '4': git_clone()
+        if git_option == '1':git_init()
+        elif git_option == '2': git_status()
+        elif git_option == '3': git_add()
+        elif git_option == '4': git_commit()
         elif git_option == '5': git_push()
-        elif git_option == '6': git_checkout()
+        elif git_option == '6': git_pull()
         elif git_option == '7': git_merge()
         elif git_option == '8': git_branch()
-        elif git_option == '9': git_pull()
-        elif git_option == '10':git_add()
-        elif git_option == '11':git_status()
+        elif git_option == '9': git_checkout()
+        elif git_option == '10':git_remove()
+        elif git_option == '11':git_remote_v()
+        elif git_option == '12': git_clone()
+        elif git_option == '13': git_rm_cached()
+        elif git_option == '14': git_config()
+        elif git_option == '15': git_config_l()
         else: print('\n******************** EXIT GIT ********************\n\n')
