@@ -136,18 +136,29 @@ def git_clone():
         print(f'An error occurred: {cp.returncode}')
 
 def git_push():
+
     remote = input(
         'Enter the remote name: '
     )
     branch = input(
         'Enter the branch name: '
     )
+
+    first_commit = input('Enter if is your first commit [Y/n]: ')
+    
     try:
         runSubprocess(
             f'pipenv run git push {remote} {branch}',
             shell=True,
             check=True
         )
+        if first_commit in ['Y, y']:
+            my_git = input('Enter your repository name: ')
+            username = getenv('GITHUB_USERNAME')
+            runSubprocess(
+                f'pipenv run git remote add {remote} https://github.com/{username}/{my_git}.git',
+                shell=True, check=True, capture_output=True)
+            
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
