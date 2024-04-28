@@ -47,6 +47,30 @@ from os import getenv
     except Exception as e:
         print(f'Exeption: {e.__str__}')"""
 
+def git_user_email():
+    try:
+        email = getenv("GITHUB_EMAIL", default='default_email')
+        runSubprocess(f'pipenv run git config --global user.email "{email}"',
+                      shell=True, check=True)
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_user_name():
+    name = getenv("GITHUB_USERNAME", default='default_name')
+    try:
+        runSubprocess(f'pipenv run git config --global user.name "{name}"',
+                      shell=True, check=True)
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_user_password():
+    pwd = getenv("GITHUB_PASSWORD", default='default_password')
+    try:
+        runSubprocess(f'pipenv run git config --global user.password "{pwd}"',
+                      shell=True, check=True)
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
 
 def git_init():
     try:
@@ -222,7 +246,7 @@ def manage_git():
     git_option = '1'
     while git_option in ['1', '2', '3', '4', '5', '6', 
                          '7', '8', '9', '10', '11', '12',
-                         '13', '14', '15']:
+                         '13', '14', '15', '16', '17', '18']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -240,6 +264,9 @@ def manage_git():
                         '13. git rm --cached "file"\n'
                         '14. git config\n'
                         '15. git config -l\n'
+                        '16. git email\n'
+                        '17. git username\n'
+                        '18. git password\n'
                         '(Other) Exit GIT\n\n'
                         'Enter your choice: '
                     )
@@ -259,4 +286,7 @@ def manage_git():
         elif git_option == '13': git_rm_cached()
         elif git_option == '14': git_config()
         elif git_option == '15': git_config_l()
+        elif git_option == '16': git_user_email()
+        elif git_option == '17': git_user_name()
+        elif git_option == '18': git_user_password()
         else: print('\n******************** EXIT GIT ********************\n\n')
