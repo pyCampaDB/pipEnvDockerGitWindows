@@ -541,7 +541,8 @@ def manage_git():
                          '19', '20', '21', '22', '23', '24',
                          '25', '26', '27', '28', '29', '30',
                          '31', '32', '33', '34', '35', '36',
-                         '37', '38', '39', '40', '41', '42']:
+                         '37', '38', '39', '40', '41', '42',
+                         '43']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -586,6 +587,7 @@ def manage_git():
                         '40. git tag "tag_name"\n'
                         '41. New release\n'
                         '42. New issue\n'
+                        '43. New pull request\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -632,4 +634,5 @@ def manage_git():
         elif git_option == '40': git_tag()
         elif git_option == '41': create_release()
         elif git_option == '42': create_issue()
+        elif git_option == '43': create_pull_request()
         else: print('\n******************** EXIT GIT ********************\n\n')
