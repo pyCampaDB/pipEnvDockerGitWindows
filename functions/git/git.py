@@ -245,6 +245,16 @@ def git_log():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_branch_vv():
+    try:
+        runSubprocess(
+            'git branch -vv',
+            check=True,
+            shell=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
 def git_config():
     try:
         runSubprocess(
@@ -271,11 +281,21 @@ def git_restore_staged():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
-def git_reset_head():
-    file = input('Input the file name: ')
+def git_reset_commit():
+    commit = input('Input the HEAD: ')
     try:
         runSubprocess(
-            f'git reset --hard HEAD {file}', shell=True, check=True
+            f'git reset --hard {commit}', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_fsck_lost_found():
+    try:
+        runSubprocess(
+            'git fsck --lost-found',
+            shell=True,
+            check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
@@ -317,6 +337,58 @@ def git_blame():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_cherry_pick():
+    hash = input('Input the hash commit')
+    try:
+        runSubprocess(
+            f'git cherry-pick {hash}',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_reflog():
+    try: 
+        runSubprocess(
+            'git reflog',
+            check=True,
+            shell=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_stash():
+    try:
+        runSubprocess(
+            'git stash',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_stash_pop():
+    try:
+        runSubprocess(
+            'git stash pop',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_stash_apply():
+    try:
+        runSubprocess(
+            'git stash apply',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+
 ##################################################################################################################################################################################################3
 def manage_git():
     git_option = '1'
@@ -324,7 +396,8 @@ def manage_git():
                          '7', '8', '9', '10', '11', '12',
                          '13', '14', '15', '16', '17', '18',
                          '19', '20', '21', '22', '23', '24',
-                         '25', '26']:
+                         '25', '26', '27', '28', '29', '30',
+                         '31', '32', '33']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -339,7 +412,7 @@ def manage_git():
                         '10. git checkout -b "branch"\n'
                         '11.git remote remove "remote"\n'
                         '12.git remote -v\n'
-                        '13.git clone\n'
+                        '13.git branch -vv\n'
                         '14. git rm --cached "file"\n'
                         '15. git config\n'
                         '16. git config -l\n'
@@ -353,6 +426,13 @@ def manage_git():
                         '24. git fetch\n'
                         '25. git diff\n'
                         '26. git blame "file"\n'
+                        '27. git fsck --lost-found\n'
+                        '28. git clone\n'
+                        '39. git cherry-pick "hash_commit"\n'
+                        '30. git reflog\n'
+                        '31. git stash\n'
+                        '32. git stash pop\n'
+                        '33. git stash apply\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -369,12 +449,12 @@ def manage_git():
         elif git_option == '10': git_checkout_b()
         elif git_option == '11':git_remove()
         elif git_option == '12':git_remote_v()
-        elif git_option == '13': git_clone()
+        elif git_option == '13': git_branch_vv()
         elif git_option == '14': git_rm_cached()
         elif git_option == '15': git_config()
         elif git_option == '16': git_config_l()
         elif git_option == '17': git_restore_staged()
-        elif git_option == '18': git_reset_head()
+        elif git_option == '18': git_reset_commit()
         elif git_option == '19': git_user_email()
         elif git_option == '20': git_user_name()
         elif git_option == '21': git_user_password()
@@ -383,4 +463,11 @@ def manage_git():
         elif git_option == '24': git_fetch()
         elif git_option == '25': git_diff()
         elif git_option == '26': git_blame()
+        elif git_option == '27': git_fsck_lost_found()
+        elif git_option == '28': git_clone()
+        elif git_option == '29': git_cherry_pick()
+        elif git_option == '30': git_reflog()
+        elif git_option == '31': git_stash()
+        elif git_option == '32': git_stash_pop()
+        elif git_option == '33': git_stash_apply()
         else: print('\n******************** EXIT GIT ********************\n\n')
