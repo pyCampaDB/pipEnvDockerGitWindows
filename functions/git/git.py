@@ -285,7 +285,7 @@ def git_reset_commit():
     commit = input('Input the HEAD: ')
     try:
         runSubprocess(
-            f'git reset --hard {commit}', shell=True, check=True
+            f'git reset {commit}', shell=True, check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
@@ -417,6 +417,34 @@ def git_rebase_abort():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_rm_file():
+    file = input('Input the file name: ')
+    try:
+        runSubprocess(
+            f'git rm {file}', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_branch_d():
+    branch = input('Input the branch name: ')
+    try:
+        runSubprocess(
+            f'git branch -d {branch}', 
+            check=True, shell=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_branch_D():
+    branch = input('Input the branch name: ')
+    try:
+        runSubprocess(
+            f'git branch -D {branch}', 
+            check=True, shell=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
 
 ##################################################################################################################################################################################################3
 def manage_git():
@@ -426,7 +454,8 @@ def manage_git():
                          '13', '14', '15', '16', '17', '18',
                          '19', '20', '21', '22', '23', '24',
                          '25', '26', '27', '28', '29', '30',
-                         '31', '32', '33', '34', '35', '36']:
+                         '31', '32', '33', '34', '35', '36',
+                         '37', '38', '39']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -446,7 +475,7 @@ def manage_git():
                         '15. git config\n'
                         '16. git config -l\n'
                         '17. git restore --staged "file"\n'
-                        '18. git reset --hard "commit"\n'
+                        '18. git reset --[hard, soft, mixed] "commit"\n'
                         '19. git email\n'
                         '20. git username\n'
                         '21. git password\n'
@@ -465,6 +494,9 @@ def manage_git():
                         '34. git stash clear\n'
                         '35. git rebase "..."\n'
                         '36. git rebase --abort\n'
+                        '37. git rm file\n'
+                        '38. git branch -d "branch"\n'
+                        '39. git branch -D "branch"\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -505,4 +537,7 @@ def manage_git():
         elif git_option == '34': git_stash_clear()
         elif git_option == '35': git_rebase()
         elif git_option == '36': git_rebase_abort()
+        elif git_option == '37': git_rm_file()
+        elif git_option == '38': git_branch_d()
+        elif git_option == '39': git_branch_D()
         else: print('\n******************** EXIT GIT ********************\n\n')
