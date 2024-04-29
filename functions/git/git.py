@@ -287,13 +287,21 @@ def git_fetch():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_diff():
+    try:
+        runSubprocess(
+            'git diff', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
 ##################################################################################################################################################################################################3
 def manage_git():
     git_option = '1'
     while git_option in ['1', '2', '3', '4', '5', '6', 
                          '7', '8', '9', '10', '11', '12',
                          '13', '14', '15', '16', '17', '18',
-                         '19', '20', '21', '22', '23']:
+                         '19', '20', '21', '22', '23', '24']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -319,6 +327,7 @@ def manage_git():
                         '21. git log\n'
                         '22. git revert\n'
                         '23. git fetch\n'
+                        '24. git diff\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -346,4 +355,5 @@ def manage_git():
         elif git_option == '21': git_log()
         elif git_option == '22': git_revert()
         elif git_option == '23': git_fetch()
+        elif git_option == '24': git_diff()
         else: print('\n******************** EXIT GIT ********************\n\n')
