@@ -4,19 +4,19 @@ from os import getenv
 """def upload_github():
     try:
         #email = getenv("GITHUB_EMAIL", default='default_email')
-        #runSubprocess(f'pipenv run git config --global user.email "{email}"',
+        #runSubprocess(f'git config --global user.email "{email}"',
         #              shell=True, check=True)
         #print('\nname')
         #username = getenv("GITHUB_USERNAME", default='default_username')
-        #runSubprocess(f'pipenv run git config --global user.name "{username}"',
+        #runSubprocess(f'git config --global user.name "{username}"',
         #              shell=True, check=True)
-        runSubprocess('pipenv run git init', shell=True, check=True)
+        runSubprocess('git init', shell=True, check=True)
         #print('\nInitializing Github & git status\n')
-        runSubprocess('pipenv run git status', shell=True, check=True)
+        runSubprocess('git status', shell=True, check=True)
         f = input("git add... your_file = ")
-        runSubprocess(f'pipenv run git add {f}', shell=True, check=True)
+        runSubprocess(f'git add {f}', shell=True, check=True)
         commit = input('Input commit message: ')
-        runSubprocess(f'pipenv run git commit -m "{commit}"', shell=True, check=True)
+        runSubprocess(f'git commit -m "{commit}"', shell=True, check=True)
 
         first_upload = ''
         while first_upload not in ['Y', 'y', 'N', 'n']:
@@ -28,10 +28,10 @@ from os import getenv
         if first_upload in ['Y', 'y']:
             remote = input('Input the remote name: ') #Default: origin
             branch = input('Input your branch: ')
-            runSubprocess(f'pipenv run git branch -M {branch}', shell=True, check=True)           
+            runSubprocess(f'git branch -M {branch}', shell=True, check=True)           
             my_git = input('Input repository name: ')
             print('\nremote add origin\n')
-            runSubprocess(f'pipenv run git remote add {remote} https://github.com/pyCampaDB/{my_git}.git',
+            runSubprocess(f'git remote add {remote} https://github.com/pyCampaDB/{my_git}.git',
                 shell=True, check=True, capture_output=True)
         
         pull = input('Do you want to make a pull? [Y/N]: ')
@@ -39,7 +39,7 @@ from os import getenv
             print('\npull\n')
             git_pull(remote, branch)
         print('\npush\n')
-        runSubprocess(f'pipenv run git push -u {remote} {branch}', 
+        runSubprocess(f'git push -u {remote} {branch}', 
                       shell=True, check=True)
         print('\nProject uploaded to GitHub\n')
     except CalledProcessError as cp:
@@ -50,7 +50,7 @@ from os import getenv
 def git_user_email():
     try:
         email = getenv("GITHUB_EMAIL", default='default_email')
-        runSubprocess(f'pipenv run git config --global user.email "{email}"',
+        runSubprocess(f'git config --global user.email "{email}"',
                       shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
@@ -58,7 +58,7 @@ def git_user_email():
 def git_user_name():
     name = getenv("GITHUB_USERNAME", default='default_name')
     try:
-        runSubprocess(f'pipenv run git config --global user.name "{name}"',
+        runSubprocess(f'git config --global user.name "{name}"',
                       shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
@@ -66,7 +66,7 @@ def git_user_name():
 def git_user_password():
     pwd = getenv("GITHUB_PASSWORD", default='default_password')
     try:
-        runSubprocess(f'pipenv run git config --global user.password "{pwd}"',
+        runSubprocess(f'git config --global user.password "{pwd}"',
                       shell=True, check=True)
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
@@ -94,7 +94,7 @@ def git_commit():
     commit = input('Input the commit message: ')
     try:
         runSubprocess(
-            f'pipenv run git commit -m "{commit}"', shell=True, check=True
+            f'git commit -m "{commit}"', shell=True, check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
@@ -102,7 +102,7 @@ def git_commit():
 def git_remote_v():
     try:
         runSubprocess(
-            'pipenv run git remote -v', shell=True, check=True
+            'git remote -v', shell=True, check=True
         )
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
@@ -113,7 +113,7 @@ def git_remove():
     )
     try:
         runSubprocess(
-            f'pipenv run git remote remove {remote}',
+            f'git remote remove {remote}',
             shell=True,
             check=True
         )
@@ -126,7 +126,7 @@ def git_clone():
     )
     try:
         runSubprocess(
-            f'pipenv run git clone {url}',
+            f'git clone {url}',
             shell= True,
             check=True
         )
@@ -146,7 +146,7 @@ def git_push():
     
     try:
         runSubprocess(
-            f'pipenv run git push {remote} {branch}',
+            f'git push {remote} {branch}',
             shell=True,
             check=True
         )
@@ -154,7 +154,7 @@ def git_push():
             my_git = input('Input your repository name: ')
             username = getenv('GITHUB_USERNAME')
             runSubprocess(
-                f'pipenv run git remote add {remote} https://github.com/{username}/{my_git}.git',
+                f'git remote add {remote} https://github.com/{username}/{my_git}.git',
                 shell=True, check=True, capture_output=True)
             
     except CalledProcessError as cp:
@@ -163,7 +163,7 @@ def git_push():
 def git_branch():
     try:
         runSubprocess(
-            'pipenv run git branch',
+            'git branch',
             shell=True,
             check=True
         )
@@ -174,7 +174,7 @@ def git_checkout():
     try:
         branch = input('Input the branch name: ')
         runSubprocess(
-            f'pipenv run git checkout {branch}',
+            f'git checkout {branch}',
             shell=True,
             check=True
         )
@@ -185,7 +185,7 @@ def git_merge():
     try:
         branch = input('Input the branch name: ')
         runSubprocess(
-            f'pipenv run git merge {branch}',
+            f'git merge {branch}',
             shell=True,
             check=True
         )
@@ -196,7 +196,7 @@ def git_checkout_b():
     try:
         branch = input('Input the branch name: ')
         runSubprocess(
-            f'pipenv run git checkout -b {branch}',
+            f'git checkout -b {branch}',
             shell=True,
             check=True
         )
@@ -210,7 +210,7 @@ def git_pull(remote=None, branch=None):
         branch = input('Input the branch name: ')
     try:
         runSubprocess(
-            f'pipenv run git pull {remote} {branch}',
+            f'git pull {remote} {branch}',
             shell=True, check=True
         )
     except CalledProcessError as cp:
@@ -220,7 +220,7 @@ def git_add():
     f = input('Input the file name: ')
     try:
         runSubprocess(
-            f'pipenv run git add {f}',
+            f'git add {f}',
             shell=True,
             check=True
         )
@@ -388,6 +388,16 @@ def git_stash_apply():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_stash_clear():
+    try:
+        runSubprocess(
+            'git stash clear',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
 
 ##################################################################################################################################################################################################3
 def manage_git():
@@ -397,7 +407,7 @@ def manage_git():
                          '13', '14', '15', '16', '17', '18',
                          '19', '20', '21', '22', '23', '24',
                          '25', '26', '27', '28', '29', '30',
-                         '31', '32', '33']:
+                         '31', '32', '33', '34']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -433,6 +443,7 @@ def manage_git():
                         '31. git stash\n'
                         '32. git stash pop\n'
                         '33. git stash apply\n'
+                        '34. git stash clear\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -470,4 +481,5 @@ def manage_git():
         elif git_option == '31': git_stash()
         elif git_option == '32': git_stash_pop()
         elif git_option == '33': git_stash_apply()
+        elif git_option == '34': git_stash_clear()
         else: print('\n******************** EXIT GIT ********************\n\n')
