@@ -1,52 +1,7 @@
 from subprocess import CalledProcessError, run as runSubprocess
 from os import getenv
-from requests import post as reqPost
+from requests import post as reqPost, put as reqPut
 
-"""def upload_github():
-    try:
-        #email = getenv("GITHUB_EMAIL", default='default_email')
-        #runSubprocess(f'git config --global user.email "{email}"',
-        #              shell=True, check=True)
-        #print('\nname')
-        #username = getenv("GITHUB_USERNAME", default='default_username')
-        #runSubprocess(f'git config --global user.name "{username}"',
-        #              shell=True, check=True)
-        runSubprocess('git init', shell=True, check=True)
-        #print('\nInitializing Github & git status\n')
-        runSubprocess('git status', shell=True, check=True)
-        f = input("git add... your_file = ")
-        runSubprocess(f'git add {f}', shell=True, check=True)
-        commit = input('Input commit message: ')
-        runSubprocess(f'git commit -m "{commit}"', shell=True, check=True)
-
-        first_upload = ''
-        while first_upload not in ['Y', 'y', 'N', 'n']:
-            first_upload = input('Input if it is your first commit [Y/N]: ')
-            if first_upload not in ['Y', 'y', 'N', 'n']:
-                print('\nInvalid option\n')
-        branch = 'main'
-        remote = 'origin'
-        if first_upload in ['Y', 'y']:
-            remote = input('Input the remote name: ') #Default: origin
-            branch = input('Input your branch: ')
-            runSubprocess(f'git branch -M {branch}', shell=True, check=True)           
-            my_git = input('Input repository name: ')
-            print('\nremote add origin\n')
-            runSubprocess(f'git remote add {remote} https://github.com/pyCampaDB/{my_git}.git',
-                shell=True, check=True, capture_output=True)
-        
-        pull = input('Do you want to make a pull? [Y/N]: ')
-        if pull in ['Y', 'y']:
-            print('\npull\n')
-            git_pull(remote, branch)
-        print('\npush\n')
-        runSubprocess(f'git push -u {remote} {branch}', 
-                      shell=True, check=True)
-        print('\nProject uploaded to GitHub\n')
-    except CalledProcessError as cp:
-        print(f'\nCalledProcessError: {cp.returncode}\n')
-    except Exception as e:
-        print(f'Exeption: {e.__str__}')"""
 
 def git_user_email():
     try:
@@ -502,7 +457,7 @@ def create_issue():
     if response.status_code == 201:
         print('\nIssue created successfully!\n')
     else:
-        print(f'Failed to create issue: {response.text}\n')
+        print(f'\nFailed to create issue: {response.text}\n')
 
 def create_pull_request():
     owner = getenv('GITHUB_USERNAME')
@@ -527,9 +482,34 @@ def create_pull_request():
     )
 
     if response.status_code == 201:
-        print('\Pull request created successfully!\n')
+        print('\nPull request created successfully!\n')
     else:
-        print(f'Failed to create pull request: {response.text}\n')
+        print(f'\nFailed to create pull request: {response.text}\n')
+
+def squash_and_merge():
+    owner = getenv('GITHUB_USERNAME')
+    repo = input('Input the repository name: ')
+    pull_number = input('Input the pull request number: ')
+    token = getenv('GITHUB_ACCESS_TOKEN')
+    url = f"https://app.github.com/repos/{owner}/{repo}/pulls/{pull_number}/merge"
+    commit_title = input('Enter the commit title: ')
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    payload = {
+        'commit_title': commit_title,
+        'merge_method': 'squash'
+    }
+
+    response = reqPut(
+        url, headers=headers, json=payload
+    )
+    if response.status_code == 200:
+        print('\nPull request squashed and merged successfully!\n')
+    else:
+        print(f'\nFailed to squash and merge pull request: {response.text}\n')
 
 
 ##################################################################################################################################################################################################3
@@ -542,7 +522,7 @@ def manage_git():
                          '25', '26', '27', '28', '29', '30',
                          '31', '32', '33', '34', '35', '36',
                          '37', '38', '39', '40', '41', '42',
-                         '43']:
+                         '43', '44']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -588,6 +568,7 @@ def manage_git():
                         '41. New release\n'
                         '42. New issue\n'
                         '43. New pull request\n'
+                        '44. Squash and merge\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -635,4 +616,56 @@ def manage_git():
         elif git_option == '41': create_release()
         elif git_option == '42': create_issue()
         elif git_option == '43': create_pull_request()
+        elif git_option == '44': squash_and_merge()
         else: print('\n******************** EXIT GIT ********************\n\n')
+
+######################################################## COMMENTS ##################################################################################
+
+
+
+
+"""def upload_github():
+    try:
+        #email = getenv("GITHUB_EMAIL", default='default_email')
+        #runSubprocess(f'git config --global user.email "{email}"',
+        #              shell=True, check=True)
+        #print('\nname')
+        #username = getenv("GITHUB_USERNAME", default='default_username')
+        #runSubprocess(f'git config --global user.name "{username}"',
+        #              shell=True, check=True)
+        runSubprocess('git init', shell=True, check=True)
+        #print('\nInitializing Github & git status\n')
+        runSubprocess('git status', shell=True, check=True)
+        f = input("git add... your_file = ")
+        runSubprocess(f'git add {f}', shell=True, check=True)
+        commit = input('Input commit message: ')
+        runSubprocess(f'git commit -m "{commit}"', shell=True, check=True)
+
+        first_upload = ''
+        while first_upload not in ['Y', 'y', 'N', 'n']:
+            first_upload = input('Input if it is your first commit [Y/N]: ')
+            if first_upload not in ['Y', 'y', 'N', 'n']:
+                print('\nInvalid option\n')
+        branch = 'main'
+        remote = 'origin'
+        if first_upload in ['Y', 'y']:
+            remote = input('Input the remote name: ') #Default: origin
+            branch = input('Input your branch: ')
+            runSubprocess(f'git branch -M {branch}', shell=True, check=True)           
+            my_git = input('Input repository name: ')
+            print('\nremote add origin\n')
+            runSubprocess(f'git remote add {remote} https://github.com/pyCampaDB/{my_git}.git',
+                shell=True, check=True, capture_output=True)
+        
+        pull = input('Do you want to make a pull? [Y/N]: ')
+        if pull in ['Y', 'y']:
+            print('\npull\n')
+            git_pull(remote, branch)
+        print('\npush\n')
+        runSubprocess(f'git push -u {remote} {branch}', 
+                      shell=True, check=True)
+        print('\nProject uploaded to GitHub\n')
+    except CalledProcessError as cp:
+        print(f'\nCalledProcessError: {cp.returncode}\n')
+    except Exception as e:
+        print(f'Exeption: {e.__str__}')"""
