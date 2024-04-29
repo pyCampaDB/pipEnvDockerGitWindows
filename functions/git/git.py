@@ -398,6 +398,25 @@ def git_stash_clear():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_rebase():
+    commit = input('Input the commit or branch: ')
+    try:
+        runSubprocess(
+            f'git rebase {commit}',
+            shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_rebase_abort():
+    try:
+        runSubprocess(
+            'git rebase --abort',
+            shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
 
 ##################################################################################################################################################################################################3
 def manage_git():
@@ -407,7 +426,7 @@ def manage_git():
                          '13', '14', '15', '16', '17', '18',
                          '19', '20', '21', '22', '23', '24',
                          '25', '26', '27', '28', '29', '30',
-                         '31', '32', '33', '34']:
+                         '31', '32', '33', '34', '35', '36']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -444,6 +463,8 @@ def manage_git():
                         '32. git stash pop\n'
                         '33. git stash apply\n'
                         '34. git stash clear\n'
+                        '35. git rebase "..."\n'
+                        '36. git rebase --abort\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -482,4 +503,6 @@ def manage_git():
         elif git_option == '32': git_stash_pop()
         elif git_option == '33': git_stash_apply()
         elif git_option == '34': git_stash_clear()
+        elif git_option == '35': git_rebase()
+        elif git_option == '36': git_rebase_abort()
         else: print('\n******************** EXIT GIT ********************\n\n')
