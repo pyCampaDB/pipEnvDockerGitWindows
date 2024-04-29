@@ -15,21 +15,21 @@ from os import getenv
         runSubprocess('pipenv run git status', shell=True, check=True)
         f = input("git add... your_file = ")
         runSubprocess(f'pipenv run git add {f}', shell=True, check=True)
-        commit = input('Enter commit message: ')
+        commit = input('Input commit message: ')
         runSubprocess(f'pipenv run git commit -m "{commit}"', shell=True, check=True)
 
         first_upload = ''
         while first_upload not in ['Y', 'y', 'N', 'n']:
-            first_upload = input('Enter if it is your first commit [Y/N]: ')
+            first_upload = input('Input if it is your first commit [Y/N]: ')
             if first_upload not in ['Y', 'y', 'N', 'n']:
                 print('\nInvalid option\n')
         branch = 'main'
         remote = 'origin'
         if first_upload in ['Y', 'y']:
-            remote = input('Enter the remote name: ') #Default: origin
-            branch = input('Enter your branch: ')
+            remote = input('Input the remote name: ') #Default: origin
+            branch = input('Input your branch: ')
             runSubprocess(f'pipenv run git branch -M {branch}', shell=True, check=True)           
-            my_git = input('Enter repository name: ')
+            my_git = input('Input repository name: ')
             print('\nremote add origin\n')
             runSubprocess(f'pipenv run git remote add {remote} https://github.com/pyCampaDB/{my_git}.git',
                 shell=True, check=True, capture_output=True)
@@ -83,7 +83,7 @@ def git_init():
 
 def git_rm_cached():
     try:
-        file = input('Enter the file: ')
+        file = input('Input the file: ')
         runSubprocess(
             f'git rm --cached {file}',
             check=True,
@@ -93,7 +93,7 @@ def git_rm_cached():
         print(f'An error occurred: {cp.stderr}')
 
 def git_commit():
-    commit = input('Enter the commit message: ')
+    commit = input('Input the commit message: ')
     try:
         runSubprocess(
             f'pipenv run git commit -m "{commit}"', shell=True, check=True
@@ -111,7 +111,7 @@ def git_remote_v():
 
 def git_remove():
     remote = input(
-        'Enter the remote name: '
+        'Input the remote name: '
     )
     try:
         runSubprocess(
@@ -124,7 +124,7 @@ def git_remove():
 
 def git_clone():
     url = input(
-        'Enter the url of the repository: '
+        'Input the url of the repository: '
     )
     try:
         runSubprocess(
@@ -138,13 +138,13 @@ def git_clone():
 def git_push():
 
     remote = input(
-        'Enter the remote name: '
+        'Input the remote name: '
     )
     branch = input(
-        'Enter the branch name: '
+        'Input the branch name: '
     )
 
-    first_commit = input('Enter if is your first commit [Y/n]: ')
+    first_commit = input('Input if is your first commit [Y/n]: ')
     
     try:
         runSubprocess(
@@ -153,7 +153,7 @@ def git_push():
             check=True
         )
         if first_commit in ['Y, y']:
-            my_git = input('Enter your repository name: ')
+            my_git = input('Input your repository name: ')
             username = getenv('GITHUB_USERNAME')
             runSubprocess(
                 f'pipenv run git remote add {remote} https://github.com/{username}/{my_git}.git',
@@ -174,9 +174,9 @@ def git_branch():
 
 def git_checkout():
     try:
-        branch = input('Enter the branch name: ')
+        file = input('Input the file name: ')
         runSubprocess(
-            f'pipenv run git checkout {branch}',
+            f'pipenv run git checkout {file}',
             shell=True,
             check=True
         )
@@ -185,7 +185,7 @@ def git_checkout():
 
 def git_merge():
     try:
-        branch = input('Enter the branch name: ')
+        branch = input('Input the branch name: ')
         runSubprocess(
             f'pipenv run git merge {branch}',
             shell=True,
@@ -197,9 +197,9 @@ def git_merge():
 
 def git_pull(remote=None, branch=None):
     if remote == None:
-        remote = input('Enter the remote name: ')
+        remote = input('Input the remote name: ')
     if branch == None:
-        branch = input('Enter the branch name: ')
+        branch = input('Input the branch name: ')
     try:
         runSubprocess(
             f'pipenv run git pull {remote} {branch}',
@@ -209,7 +209,7 @@ def git_pull(remote=None, branch=None):
         print(f'An error occurred: {cp.returncode}')
 
 def git_add():
-    f = input('Enter the file name: ')
+    f = input('Input the file name: ')
     try:
         runSubprocess(
             f'pipenv run git add {f}',
@@ -253,11 +253,32 @@ def git_config_l():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_restore_staged():
+    file = input('Input the file name: ')
+    try:
+        runSubprocess(
+            f'git restore --staged {file}', 
+            shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def git_reset_head():
+    file = input('Input the file name: ')
+    try:
+        runSubprocess(
+            f'git reset HEAD {file}', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+
 def manage_git():
     git_option = '1'
     while git_option in ['1', '2', '3', '4', '5', '6', 
                          '7', '8', '9', '10', '11', '12',
-                         '13', '14', '15', '16', '17', '18']:
+                         '13', '14', '15', '16', '17', '18',
+                         '19', '20']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -275,11 +296,13 @@ def manage_git():
                         '13. git rm --cached "file"\n'
                         '14. git config\n'
                         '15. git config -l\n'
-                        '16. git email\n'
-                        '17. git username\n'
-                        '18. git password\n'
+                        '16. git restore --staged "file"\n'
+                        '17. git reset HEAD --hard "file"\n'
+                        '18. git email\n'
+                        '19. git username\n'
+                        '20. git password\n'
                         '(Other) Exit GIT\n\n'
-                        'Enter your choice: '
+                        'Input your choice: '
                     )
 
         if git_option == '1':git_init()
@@ -297,7 +320,9 @@ def manage_git():
         elif git_option == '13': git_rm_cached()
         elif git_option == '14': git_config()
         elif git_option == '15': git_config_l()
-        elif git_option == '16': git_user_email()
-        elif git_option == '17': git_user_name()
-        elif git_option == '18': git_user_password()
+        elif git_option == '16': git_restore_staged()
+        elif git_option == '17': git_reset_head()
+        elif git_option == '18': git_user_email()
+        elif git_option == '19': git_user_name()
+        elif git_option == '20': git_user_password()
         else: print('\n******************** EXIT GIT ********************\n\n')
