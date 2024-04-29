@@ -427,7 +427,7 @@ def manage_git():
                         '15. git config\n'
                         '16. git config -l\n'
                         '17. git restore --staged "file"\n'
-                        '18. git reset --hard HEAD "file"\n'
+                        '18. git reset --hard "commit"\n'
                         '19. git email\n'
                         '20. git username\n'
                         '21. git password\n'
