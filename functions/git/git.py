@@ -172,9 +172,9 @@ def git_branch():
 
 def git_checkout():
     try:
-        file = input('Input the file name: ')
+        branch = input('Input the branch name: ')
         runSubprocess(
-            f'pipenv run git checkout {file}',
+            f'pipenv run git checkout {branch}',
             shell=True,
             check=True
         )
