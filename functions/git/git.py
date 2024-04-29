@@ -192,6 +192,17 @@ def git_merge():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.returncode}')
 
+def git_checkout_b():
+    try:
+        branch = input('Input the branch name: ')
+        runSubprocess(
+            f'pipenv run git checkout -b {branch}',
+            shell=True,
+            check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.returncode}')
+
 def git_pull(remote=None, branch=None):
     if remote == None:
         remote = input('Input the remote name: ')
@@ -313,7 +324,7 @@ def manage_git():
                          '7', '8', '9', '10', '11', '12',
                          '13', '14', '15', '16', '17', '18',
                          '19', '20', '21', '22', '23', '24',
-                         '25']:
+                         '25', '26']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -324,23 +335,24 @@ def manage_git():
                         '6. git pull\n'
                         '7. git merge\n'
                         '8. Display the availables local branches of the repository\n'
-                        '9. git checkout\n'
-                        '10.git remote remove "remote"\n'
-                        '11.git remote -v\n'
-                        '12.git clone\n'
-                        '13. git rm --cached "file"\n'
-                        '14. git config\n'
-                        '15. git config -l\n'
-                        '16. git restore --staged "file"\n'
-                        '17. git reset --hard HEAD "file"\n'
-                        '18. git email\n'
-                        '19. git username\n'
-                        '20. git password\n'
-                        '21. git log\n'
-                        '22. git revert\n'
-                        '23. git fetch\n'
-                        '24. git diff\n'
-                        '25. git blame "file"\n'
+                        '9. git checkout "branch"\n'
+                        '10. git checkout -b "branch"\n'
+                        '11.git remote remove "remote"\n'
+                        '12.git remote -v\n'
+                        '13.git clone\n'
+                        '14. git rm --cached "file"\n'
+                        '15. git config\n'
+                        '16. git config -l\n'
+                        '17. git restore --staged "file"\n'
+                        '18. git reset --hard HEAD "file"\n'
+                        '19. git email\n'
+                        '20. git username\n'
+                        '21. git password\n'
+                        '22. git log\n'
+                        '23. git revert\n'
+                        '24. git fetch\n'
+                        '25. git diff\n'
+                        '26. git blame "file"\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -354,20 +366,21 @@ def manage_git():
         elif git_option == '7': git_merge()
         elif git_option == '8': git_branch()
         elif git_option == '9': git_checkout()
-        elif git_option == '10':git_remove()
-        elif git_option == '11':git_remote_v()
-        elif git_option == '12': git_clone()
-        elif git_option == '13': git_rm_cached()
-        elif git_option == '14': git_config()
-        elif git_option == '15': git_config_l()
-        elif git_option == '16': git_restore_staged()
-        elif git_option == '17': git_reset_head()
-        elif git_option == '18': git_user_email()
-        elif git_option == '19': git_user_name()
-        elif git_option == '20': git_user_password()
-        elif git_option == '21': git_log()
-        elif git_option == '22': git_revert()
-        elif git_option == '23': git_fetch()
-        elif git_option == '24': git_diff()
-        elif git_option == '25': git_blame()
+        elif git_option == '10': git_checkout_b()
+        elif git_option == '11':git_remove()
+        elif git_option == '12':git_remote_v()
+        elif git_option == '13': git_clone()
+        elif git_option == '14': git_rm_cached()
+        elif git_option == '15': git_config()
+        elif git_option == '16': git_config_l()
+        elif git_option == '17': git_restore_staged()
+        elif git_option == '18': git_reset_head()
+        elif git_option == '19': git_user_email()
+        elif git_option == '20': git_user_name()
+        elif git_option == '21': git_user_password()
+        elif git_option == '22': git_log()
+        elif git_option == '23': git_revert()
+        elif git_option == '24': git_fetch()
+        elif git_option == '25': git_diff()
+        elif git_option == '26': git_blame()
         else: print('\n******************** EXIT GIT ********************\n\n')
