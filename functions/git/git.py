@@ -295,13 +295,25 @@ def git_diff():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_blame():
+    file = input(
+        'Enter the file name:'
+    )
+    try:
+        runSubprocess(
+            f'git blame {file}', shell=True, check=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
 ##################################################################################################################################################################################################3
 def manage_git():
     git_option = '1'
     while git_option in ['1', '2', '3', '4', '5', '6', 
                          '7', '8', '9', '10', '11', '12',
                          '13', '14', '15', '16', '17', '18',
-                         '19', '20', '21', '22', '23', '24']:
+                         '19', '20', '21', '22', '23', '24',
+                         '25']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -328,6 +340,7 @@ def manage_git():
                         '22. git revert\n'
                         '23. git fetch\n'
                         '24. git diff\n'
+                        '25. git blame "file"\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -356,4 +369,5 @@ def manage_git():
         elif git_option == '22': git_revert()
         elif git_option == '23': git_fetch()
         elif git_option == '24': git_diff()
+        elif git_option == '25': git_blame()
         else: print('\n******************** EXIT GIT ********************\n\n')
