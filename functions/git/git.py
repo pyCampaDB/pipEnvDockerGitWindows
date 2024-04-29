@@ -1,5 +1,6 @@
 from subprocess import CalledProcessError, run as runSubprocess
 from os import getenv
+from requests import post as reqPost
 
 """def upload_github():
     try:
@@ -446,6 +447,65 @@ def git_branch_D():
     except CalledProcessError as cp:
         print(f'An error occurred: {cp.stderr}')
 
+def git_tag():
+    tag = input('Input the tag: ')
+    try:
+        runSubprocess(
+            f'git tag {tag}',
+            check=True, shell=True
+        )
+    except CalledProcessError as cp:
+        print(f'An error occurred: {cp.stderr}')
+
+def create_release():
+    owner = getenv('GITHUB_USERNAME')
+    repo = input('Input the repository name: ')
+    url = f"https://api.github.com/repos/{owner}/{repo}/releases"
+    tag_name = input('Input the tag name: ')
+    name = input('Enter the release name: ')
+    body = input('Input a description: ')
+    target_commitish = input('Input the branch or commit: ')
+
+    payload={
+        'tag_name': tag_name,
+        'target_commitish': target_commitish,
+        'name': name,
+        'body': body
+    }
+    token = getenv('GITHUB_ACCESS_TOKEN')
+    response = reqPost(
+        url, json=payload,
+        headers={'Authorization': f'token {token}'}
+    )
+    if response.status_code == 201:
+        print('\nRelease created successfully!\n')
+    else:
+        print(f'\nFailed to create release: {response.text}\n')
+
+def create_issue():
+    owner = getenv('GITHUB_USERNAME')
+    repo = input('Input the repository name: ')
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues"
+    title = input('Input the issue title: ')
+    body = input('Input a description: ')
+    payload = {
+        'title': title,
+        'body': body
+    }
+    token = getenv('GITHUB_ACCESS_TOKEN')
+    response = reqPost(
+        url, 
+        json=payload, 
+        headers={'Authorization': f'token {token}'}
+    )
+
+    if response.status_code == 201:
+        print('\nIssue created successfully!\n')
+    else:
+        print(f'Failed to create issue: {response.text}\n')
+
+
+
 ##################################################################################################################################################################################################3
 def manage_git():
     git_option = '1'
@@ -455,7 +515,7 @@ def manage_git():
                          '19', '20', '21', '22', '23', '24',
                          '25', '26', '27', '28', '29', '30',
                          '31', '32', '33', '34', '35', '36',
-                         '37', '38', '39']:
+                         '37', '38', '39', '40', '41', '42']:
         git_option = input(
                         '\n******************** GIT ********************\n\n'
                         '1. git init\n'
@@ -497,6 +557,9 @@ def manage_git():
                         '37. git rm file\n'
                         '38. git branch -d "branch"\n'
                         '39. git branch -D "branch"\n'
+                        '40. git tag "tag_name"\n'
+                        '41. New release\n'
+                        '42. New issue\n'
                         '(Other) Exit GIT\n\n'
                         'Input your choice: '
                     )
@@ -540,4 +603,7 @@ def manage_git():
         elif git_option == '37': git_rm_file()
         elif git_option == '38': git_branch_d()
         elif git_option == '39': git_branch_D()
+        elif git_option == '40': git_tag()
+        elif git_option == '41': create_release()
+        elif git_option == '42': create_issue()
         else: print('\n******************** EXIT GIT ********************\n\n')
