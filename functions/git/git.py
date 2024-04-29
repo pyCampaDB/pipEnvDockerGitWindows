@@ -504,6 +504,32 @@ def create_issue():
     else:
         print(f'Failed to create issue: {response.text}\n')
 
+def create_pull_request():
+    owner = getenv('GITHUB_USERNAME')
+    repo = input('Input the repository name: ')
+    url = f"https://api.github.com/repos/{owner}/{repo}/pulls"
+    title = input('Input the issue title: ')
+    body = input('Input a description: ')
+    head_branch = input('Input the head branch: ')
+    base_branch = input('Input a base branch: ')
+    payload = {
+        'title': title,
+        'head': head_branch,
+        'base': base_branch,
+        'body': body
+    }
+    token = getenv('GITHUB_ACCESS_TOKEN')
+    response = reqPost(
+        url, 
+        json=payload, 
+        headers={'Authorization': f'token {token}',
+                 'Accept': 'application/vnd.github.v3+json'}
+    )
+
+    if response.status_code == 201:
+        print('\Pull request created successfully!\n')
+    else:
+        print(f'Failed to create pull request: {response.text}\n')
 
 
 ##################################################################################################################################################################################################3
