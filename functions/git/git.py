@@ -508,7 +508,7 @@ def create_pull_request():
     owner = getenv('GITHUB_USERNAME')
     repo = input('Input the repository name: ')
     url = f"https://api.github.com/repos/{owner}/{repo}/pulls"
-    title = input('Input the issue title: ')
+    title = input('Input the pull request title: ')
     body = input('Input a description: ')
     head_branch = input('Input the head branch: ')
     base_branch = input('Input a base branch: ')
